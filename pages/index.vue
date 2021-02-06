@@ -1,89 +1,244 @@
 <template>
   <v-row justify="center" align="center">
-    <v-col cols="12" sm="8" md="6">
-      <div class="text-center">
-        <logo />
-        <vuetify-logo />
-      </div>
-      <v-card>
-        <v-card-title class="headline">
-          Welcome to the Vuetify + Nuxt.js template
-        </v-card-title>
-        <v-card-text>
-          <p>Vuetify is a progressive Material Design component framework for Vue.js. It was designed to empower developers to create amazing applications.</p>
-          <p>
-            For more information on Vuetify, check out the <a
-              href="https://vuetifyjs.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              documentation
-            </a>.
-          </p>
-          <p>
-            If you have questions, please join the official <a
-              href="https://chat.vuetifyjs.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="chat"
-            >
-              discord
-            </a>.
-          </p>
-          <p>
-            Find a bug? Report it on the github <a
-              href="https://github.com/vuetifyjs/vuetify/issues"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="contribute"
-            >
-              issue board
-            </a>.
-          </p>
-          <p>Thank you for developing with Vuetify and I look forward to bringing more exciting features in the future.</p>
-          <div class="text-xs-right">
-            <em><small>&mdash; John Leider</small></em>
-          </div>
-          <hr class="my-3">
-          <a
-            href="https://nuxtjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
+    <v-col cols="12" sm="8" md="12">
+      <v-container class="my-6">
+        <v-card color="transparent" flat>
+          <v-row>
+            <v-col cols="12" md="3" sm="12">
+              <v-text-field
+                v-model="filters.searchrace"
+                clearable
+                placeholder="Race"
+                solo
+                class="rounded-lg"
+                append-icon="mdi-magnify"
+              />
+            </v-col>
+            <v-col cols="12" md="3" sm="12">
+              <v-select
+                v-model="filters.publisher"
+                :items="publishers"
+                placeholder="Publisher"
+                clearable
+                class="rounded-lg"
+                item-text="publisher_name"
+                item-value="publisher_id"
+                solo
+              />
+            </v-col>
+            <v-col cols="12" md="3" sm="12">
+              <v-select
+                v-model="filters.gender"
+                :items="genders"
+                placeholder="Gender"
+                clearable
+                class="rounded-lg"
+                item-text="name"
+                item-value="gender_id"
+                solo
+              />
+            </v-col>
+            <v-col cols="12" md="3" sm="12">
+              <v-select
+                v-model="filters.alignment"
+                :items="alignments"
+                placeholder="Alignment"
+                clearable
+                class="rounded-lg"
+                item-text="name"
+                item-value="alignment_id"
+                solo
+              />
+            </v-col>
+          </v-row>
+        </v-card>
+        <v-card>
+          <v-data-table
+            :headers="headers"
+            :items="heroes"
+            :loading="loading"
+            loading-text="Loading... Please wait"
+            hide-default-footer
+            class="elevation-1"
           >
-            Nuxt Documentation
-          </a>
-          <br>
-          <a
-            href="https://github.com/nuxt/nuxt.js"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt GitHub
-          </a>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            color="primary"
-            nuxt
-            to="/inspire"
-          >
-            Continue
-          </v-btn>
-        </v-card-actions>
-      </v-card>
+            <template #top>
+              <v-toolbar flat color="blue-grey lighten-5" class="grey lighten-3 grey--text">
+                <v-toolbar-title>
+                  {{ pagination.totalItems }} Total Heroes
+                </v-toolbar-title>
+              </v-toolbar>
+            </template>
+            <!-- eslint-disable-next-line vue/valid-v-slot-->
+            <template #item.action="{ item }">
+              <nuxt-link
+                :to="{name:'id', params: { id: item._id }}"
+                class="text-decoration-none"
+              >
+                <v-icon
+                  small
+                  class="mr-2"
+                  title="View"
+                >
+                  mdi-eye
+                </v-icon>
+              </nuxt-link>
+              <nuxt-link
+                :to="{name:'id-edit', params: { id: item._id }}"
+                class="text-decoration-none"
+              >
+                <v-icon
+                  small
+                  class="mr-2"
+                  title="Edit"
+                >
+                  mdi-pencil
+                </v-icon>
+              </nuxt-link>
+              <v-icon
+                small
+                title="Delete"
+                @click="dialogDelete(item)"
+              >
+                mdi-delete
+              </v-icon>
+            </template>
+          </v-data-table>
+        </v-card>
+        <v-row justify="center" class="py-4">
+          <v-pagination
+            v-model="page"
+            :total-visible="5"
+            :length="pagination.totalPages"
+            circle
+            color="black"
+          />
+        </v-row>
+      </v-container>
+      <v-btn
+        bottom
+        color="complement"
+        dark
+        fab
+        fixed
+        right
+        medium
+      >
+        <nuxt-link :to="{name: 'new'}" style="text-decoration: none">
+          <v-icon color="white">
+            mdi-plus
+          </v-icon>
+        </nuxt-link>
+      </v-btn>
+      <delete-dialog
+        :dialog="dialog"
+        @accept="deleteItem()"
+        @cancel="cancelDelete()"
+      >
+        <h3 slot="title">
+          Delete Hero
+        </h3>
+        <p slot="message">
+          Do you want to delete this hero? It cannot be restored
+        </p>
+      </delete-dialog>
     </v-col>
   </v-row>
 </template>
 
 <script>
-import Logo from '~/components/Logo.vue'
-import VuetifyLogo from '~/components/VuetifyLogo.vue'
-
+import debounce from 'lodash/debounce'
+import { mapState } from 'vuex'
+import DeleteDialog from '@/components/dialogs/DeleteDialog'
 export default {
   components: {
-    Logo,
-    VuetifyLogo
+    DeleteDialog
+  },
+  async asyncData ({ store }) {
+    await Promise.any([
+      store.dispatch('heroes/fetch'),
+      store.dispatch('heroes/fetchPublishers'),
+      store.dispatch('heroes/fetchGenders'),
+      store.dispatch('heroes/fetchAlignments')
+    ])
+  },
+  data: () => ({
+    filters: {
+      searchrace: '',
+      publisher: null,
+      gender: null,
+      alignment: null
+    },
+    page: 1,
+    dialog: false,
+    idToDelete: null,
+    headers: [
+      { text: 'Hero ID', value: 'hero_id' },
+      { text: 'Name', value: 'name' },
+      { text: 'Eye Color', value: 'eye_color' },
+      { text: 'Hair Color', value: 'hair_color' },
+      { text: 'Skin Color', value: 'skin_color' },
+      { text: 'Height', value: 'height' },
+      { text: 'Weight', value: 'weight' },
+      { text: 'Race', value: 'race' },
+      { text: 'Publisher', value: 'publisher_id' },
+      { text: 'Gender', value: 'gender_id' },
+      { text: 'Alignment', value: 'alignment_id' },
+      { text: 'Actions', value: 'action', sortable: false }
+    ]
+  }),
+  computed: {
+    ...mapState({
+      pagination: state => state.heroes.pagination,
+      heroes: state => state.heroes.items,
+      loading: state => state.heroes.loading,
+      publishers: state => state.heroes.publishers,
+      genders: state => state.heroes.genders,
+      alignments: state => state.heroes.alignments
+    }),
+    head () {
+      return { title: 'Heroes' }
+    }
+  },
+  watch: {
+    page: {
+      handler: 'fetchInfo',
+      deep: true
+    },
+    filters: {
+      deep: true,
+      handler: 'fetchInfo'
+    }
+  },
+  methods: {
+    dialogDelete (item) {
+      this.idToDelete = item._id
+      this.dialog = true
+    },
+    cancelDelete () {
+      this.idToDelete = null
+      this.dialog = false
+    },
+    async deleteItem () {
+      this.dialog = false
+      await this.$store.dispatch('hero/delete', this.idToDelete)
+    },
+    fetchInfo: debounce(function () {
+      this.$store.dispatch('heroes/fetch', {
+        page: this.page,
+        race: this.filters.searchrace === '' ? null : this.filters.searchrace,
+        gender: this.filters.gender ? this.filters.gender : null,
+        publisher: this.filters.publisher ? this.filters.publisher : null,
+        alignment: this.filters.alignment ? this.filters.alignment : null
+      })
+    })
   }
 }
 </script>
+
+<style lang="scss">
+  .v-pagination__item {
+    &--active {
+    color: white;
+    }
+  }
+</style>
