@@ -1,3 +1,4 @@
+/* eslint-disable vue/valid-v-slot */
 <template>
   <v-row justify="center" align="center">
     <v-col cols="12" sm="8" md="12">
@@ -67,6 +68,24 @@
                   {{ pagination.totalItems }} Total Heroes
                 </v-toolbar-title>
               </v-toolbar>
+            </template>
+            <!-- eslint-disable-next-line vue/valid-v-slot-->
+            <template #item.publisher="{ item }">
+              <p v-if="item.publisher.length > 0">
+                {{ item.publisher[0].publisher_name }}
+              </p>
+            </template>
+            <!-- eslint-disable-next-line vue/valid-v-slot-->
+            <template #item.gender="{ item }">
+              <p v-if="item.gender.length > 0">
+                {{ item.gender[0].name }}
+              </p>
+            </template>
+            <!-- eslint-disable-next-line vue/valid-v-slot-->
+            <template #item.alignment="{ item }">
+              <p v-if="item.alignment.length > 0">
+                {{ item.alignment[0].name }}
+              </p>
             </template>
             <!-- eslint-disable-next-line vue/valid-v-slot-->
             <template #item.action="{ item }">
@@ -180,9 +199,9 @@ export default {
       { text: 'Height', value: 'height' },
       { text: 'Weight', value: 'weight' },
       { text: 'Race', value: 'race' },
-      { text: 'Publisher', value: 'publisher_id' },
-      { text: 'Gender', value: 'gender_id' },
-      { text: 'Alignment', value: 'alignment_id' },
+      { text: 'Publisher', value: 'publisher' },
+      { text: 'Gender', value: 'gender' },
+      { text: 'Alignment', value: 'alignment' },
       { text: 'Actions', value: 'action', sortable: false }
     ]
   }),

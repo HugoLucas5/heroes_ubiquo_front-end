@@ -62,7 +62,6 @@ export const actions = {
       const { data } = await this.$axios.get('/publishers', {
         progress: false
       })
-      console.log(data)
       commit('setPublishers', data)
     } catch (error) {
       dispatch('snackbar/error', error.response.data.errors, { root: true })
@@ -77,7 +76,6 @@ export const actions = {
       const { data } = await this.$axios.get('/genders', {
         progress: false
       })
-      console.log(data)
       commit('setGenders', data)
     } catch (error) {
       dispatch('snackbar/error', error.response.data.errors, { root: true })
@@ -92,7 +90,6 @@ export const actions = {
       const { data } = await this.$axios.get('/alignments', {
         progress: false
       })
-      console.log(data)
       commit('setAlignments', data)
     } catch (error) {
       dispatch('snackbar/error', error.response.data.errors, { root: true })
