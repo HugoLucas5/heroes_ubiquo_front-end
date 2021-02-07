@@ -5,7 +5,9 @@
       fixed
       app
     >
-      <v-toolbar-title v-text="title" />
+      <nuxt-link to="/" style="text-decoration: none" class="black--text">
+        <v-toolbar-title v-text="title" />
+      </nuxt-link>
     </v-app-bar>
     <v-main>
       <nuxt />
