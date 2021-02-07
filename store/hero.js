@@ -41,10 +41,7 @@ export const actions = {
 
   async put ({ dispatch }, params) {
     try {
-      const { data } = await this.$axios.put(
-        `/${params._id}`,
-        { params }
-      )
+      const { data } = await this.$axios.put(`/${params._id}`, params)
       this.$router.push({
         name: 'id', params: { id: data._id }
       })

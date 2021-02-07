@@ -12,9 +12,10 @@
               <v-text-field
                 v-model="hero.name"
                 :rules="[rules.required]"
-                label="Name"
+                placeholder="Name"
                 solo
                 hint="Name"
+                persistent-hint
                 clearable
                 class="rounded-lg"
               />
@@ -22,9 +23,10 @@
             <v-col cols="12" md="6">
               <v-text-field
                 v-model="hero.race"
-                label="Race"
+                placeholder="Race"
                 solo
                 hint="Race"
+                persistent-hint
                 clearable
                 class="rounded-lg"
               />
@@ -32,9 +34,10 @@
             <v-col cols="12" md="6">
               <v-text-field
                 v-model="hero.eye_color"
-                label="Eye Color"
+                placeholder="Eye Color"
                 solo
                 hint="Eye Color"
+                persistent-hint
                 clearable
                 class="rounded-lg"
               />
@@ -42,9 +45,10 @@
             <v-col cols="12" md="6">
               <v-text-field
                 v-model="hero.hair_color"
-                label="Hari Color"
+                placeholder="Hari Color"
                 solo
                 hint="Hair Color"
+                persistent-hint
                 clearable
                 class="rounded-lg"
               />
@@ -52,9 +56,10 @@
             <v-col cols="12" md="6">
               <v-text-field
                 v-model="hero.skin_color"
-                label="Skin Color"
+                placeholder="Skin Color"
                 solo
                 hint="Skin Color"
+                persistent-hint
                 clearable
                 class="rounded-lg"
               />
@@ -62,23 +67,27 @@
             <v-col cols="12" md="3">
               <v-text-field
                 v-model="hero.height"
-                label="Height"
+                placeholder="Height"
                 :rules="[rules.number]"
                 solo
                 hint="Height"
+                persistent-hint
                 clearable
                 class="rounded-lg"
+                @click:clear="hero.height = ''"
               />
             </v-col>
             <v-col cols="12" md="3">
               <v-text-field
                 v-model="hero.weight"
-                label="Weight"
+                placeholder="Weight"
                 :rules="[rules.number]"
                 solo
                 hint="Weight"
+                persistent-hint
                 clearable
                 class="rounded-lg"
+                @click:clear="hero.weight = ''"
               />
             </v-col>
             <v-col cols="12" md="6">
@@ -88,6 +97,7 @@
                 :items="publishers"
                 placeholder="Publisher"
                 hint="Alignment"
+                persistent-hint
                 clearable
                 class="rounded-lg"
                 item-text="publisher_name"
@@ -102,6 +112,7 @@
                 :items="alignments"
                 placeholder="Alignment"
                 hint="Alignment"
+                persistent-hint
                 clearable
                 class="rounded-lg"
                 item-text="name"
@@ -116,6 +127,7 @@
                 :items="genders"
                 placeholder="Gender"
                 hint="Gender"
+                persistent-hint
                 clearable
                 class="rounded-lg"
                 item-text="name"
