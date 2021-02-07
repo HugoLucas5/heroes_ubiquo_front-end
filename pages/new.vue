@@ -2,7 +2,7 @@
   <v-main class="py-0">
     <v-toolbar
       color="grey lighten-4"
-      class="pa-2"
+      class="px-4 pa-2"
       flat
       dark
     >
