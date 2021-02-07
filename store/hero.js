@@ -18,7 +18,7 @@ export const actions = {
     try {
       commit('setLoading', true)
       const { data } = await this.$axios.get(`/${id}`)
-      commit('setHero', data)
+      commit('setHero', data.docs[0])
     } catch (errors) {
       dispatch('snackbar/error', errors.response.data.errors, { root: true })
     } finally {
