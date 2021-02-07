@@ -8,26 +8,24 @@
       <v-toolbar-title v-text="title" />
     </v-app-bar>
     <v-main>
-      <v-container>
-        <nuxt />
-        <v-snackbar
-          v-model="snackbar"
-          :timeout="6000"
-          :color="`${snackbarType}`"
-        >
-          {{ snackbarText }}
-          <template #action="{ attrs }">
-            <v-btn
-              color="white"
-              text
-              v-bind="attrs"
-              @click="snackbar = false"
-            >
-              Close
-            </v-btn>
-          </template>
-        </v-snackbar>
-      </v-container>
+      <nuxt />
+      <v-snackbar
+        v-model="snackbar"
+        :timeout="6000"
+        :color="`${snackbarType}`"
+      >
+        {{ snackbarText }}
+        <template #action="{ attrs }">
+          <v-btn
+            color="white"
+            text
+            v-bind="attrs"
+            @click="snackbar = false"
+          >
+            Close
+          </v-btn>
+        </template>
+      </v-snackbar>
     </v-main>
     <v-footer
       app

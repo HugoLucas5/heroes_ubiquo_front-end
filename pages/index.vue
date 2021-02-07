@@ -1,4 +1,3 @@
-/* eslint-disable vue/valid-v-slot */
 <template>
   <v-row justify="center" align="center">
     <v-col cols="12" sm="8" md="12">
@@ -67,6 +66,16 @@
                 <v-toolbar-title>
                   {{ pagination.totalItems }} Total Heroes
                 </v-toolbar-title>
+                <v-spacer />
+                <v-text-field
+                  v-model="filters.searchname"
+                  clearable
+                  placeholder="Name"
+                  hide-details
+                  class="rounded-lg"
+                  color="black"
+                  append-icon="mdi-magnify"
+                />
               </v-toolbar>
             </template>
             <!-- eslint-disable-next-line vue/valid-v-slot-->
@@ -182,6 +191,7 @@ export default {
   },
   data: () => ({
     filters: {
+      searchname: '',
       searchrace: '',
       publisher: null,
       gender: null,
@@ -213,10 +223,7 @@ export default {
       publishers: state => state.heroes.publishers,
       genders: state => state.heroes.genders,
       alignments: state => state.heroes.alignments
-    }),
-    head () {
-      return { title: 'Heroes' }
-    }
+    })
   },
   watch: {
     page: {
@@ -244,12 +251,17 @@ export default {
     fetchInfo: debounce(function () {
       this.$store.dispatch('heroes/fetch', {
         page: this.page,
+        name: this.filters.searchname === '' ? null : this.filters.searchname,
         race: this.filters.searchrace === '' ? null : this.filters.searchrace,
         gender: this.filters.gender ? this.filters.gender : null,
         publisher: this.filters.publisher ? this.filters.publisher : null,
         alignment: this.filters.alignment ? this.filters.alignment : null
       })
     })
+  },
+  // eslint-disable-next-line vue/order-in-components
+  head () {
+    return { title: 'Index Heroes' }
   }
 }
 </script>
